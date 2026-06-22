@@ -1,0 +1,89 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,Danh sách văn bản,Happy,TK có quyền Xem QL văn bản,Kiểm tra truy cập màn Quản lý văn bản từ Chi tiết hợp đồng,"1. Danh sách hợp đồng => Xem => Chi tiết hợp đồng
+2. Mở tab Quản lý văn bản","1. Hiển thị danh sách văn bản.
+2. 20 bản ghi/trang, bản ghi mới nhất lên đầu.",,High,,
+2,Danh sách văn bản,Unhappy,TK không có quyền Xem,Kiểm tra chặn truy cập khi không được phân quyền,"1. Đăng nhập TK không quyền
+2. Mở Quản lý văn bản",1. Không truy cập được / ẩn chức năng hoặc báo không có quyền.,,High,,
+3,Danh sách văn bản,Happy,Có nhiều loại văn bản,Kiểm tra lọc theo Loại văn bản (droplist 1 giá trị),"1. Mở droplist Loại văn bản
+2. Chọn lần lượt: Tất cả / Phụ lục / Giấy ủy quyền / Biên bản","1. Mặc định 'Tất cả'.
+2. Lọc đúng theo nhóm/loại đã chọn.",,High,,
+4,Danh sách văn bản,Happy,Có dữ liệu,Kiểm tra grid hiển thị đủ cột theo BA,1. Quan sát các cột,"1. STT, Ngày tạo (DD/MM/YYYY), Ngày hiệu lực, Tên văn bản (click mở popup), Loại văn bản, Loại yêu cầu, Trạng thái hiệu lực, Trạng thái ký, Trạng thái VH duyệt, Thao tác.",,High,,
+5,Danh sách văn bản,Happy,Có văn bản đủ trạng thái hiệu lực,Kiểm tra màu trạng thái hiệu lực,1. Quan sát cột Trạng thái hiệu lực,1. Còn hiệu lực = xanh; Hết hiệu lực = đỏ; Huỷ = xám.,,Medium,,
+6,Danh sách văn bản,Happy,Có văn bản nhiều loại,Kiểm tra Trạng thái ký hiển thị đúng bộ trạng thái theo từng loại văn bản,1. Quan sát Trạng thái ký theo từng loại,"1. PL đổi TK/phí: Nháp, Chờ MC ký, MC ký lỗi, Chờ Gtelpay ký, Gtelpay ký lỗi, Gtelpay đã ký, Ký tay.
+2. PL cấp TID: thêm Chờ thẩm định, Không đạt.
+3. GUQ NNUQ: Nháp, Chờ thẩm định, Chờ BD ký, BD ký lỗi, Chờ NNUQ ký, NNUQ ký lỗi, Chờ MC ký, MC ký lỗi, Ký tay.",,High,,HỎI BA: GUQ người đại diện MC có bước Gtelpay ký không (spec mâu thuẫn)
+7,Danh sách văn bản,Happy,Có GUQ NNUQ,Kiểm tra Trạng thái VH duyệt cho GUQ NNUQ,1. Quan sát cột Trạng thái VH duyệt với GUQ NNUQ,1. Hiển thị: Chờ tiếp nhận / Đã tiếp nhận / Từ chối.,,Medium,,
+8,Danh sách văn bản,Happy,Có văn bản,Kiểm tra nhấn Tên văn bản mở popup văn bản,1. Nhấn Tên văn bản (textbutton),1. Hiển thị popup nội dung văn bản tương ứng.,,Medium,,
+9,Danh sách văn bản,Happy,,Kiểm tra nút Tạo văn bản mở popup Tạo văn bản,1. Nhấn Tạo văn bản,1. Hiển thị popup Tạo văn bản.,,High,,
+10,Tạo văn bản (chung),Happy,Mở popup Tạo văn bản,Kiểm tra droplist Loại yêu cầu hiển thị đủ giá trị,1. Mở droplist Loại yêu cầu,"1. Gồm: Thay đổi tài khoản thanh toán, Cấp bổ sung TID/MID, Thay đổi phí.",,High,,
+11,Tạo văn bản (chung),Happy,Loại yêu cầu = Thay đổi TK,Kiểm tra trường Người nhận thanh toán chỉ hiện & bắt buộc khi Loại yêu cầu = Thay đổi TK,"1. Chọn Loại yêu cầu = Thay đổi TK
+2. Đổi sang loại khác","1. Khi Thay đổi TK: hiện droplist Người nhận (Người đại diện MC / Merchant / NNUQ), mặc định Merchant, bắt buộc.
+2. Loại khác: ẩn trường này.",,High,,
+12,Tạo văn bản (chung),Unhappy,MC là Tổ chức,Kiểm tra disable NNUQ & Người đại diện MC khi MC là Tổ chức,"1. MC tổ chức
+2. Loại = Thay đổi TK
+3. Mở Người nhận thanh toán",1. NNUQ và Người đại diện MC bị disable (chỉ chọn Merchant).,,High,,HỎI BA: MC tổ chức đổi TK theo luồng nào?
+13,Tạo - Đổi TK (Merchant),Happy,"HĐ Đang hoạt động, ký điện tử",Kiểm tra tạo phụ lục đổi TK (Merchant) - ký điện tử,"1. Loại=Thay đổi TK, Người nhận=Merchant
+2. Chọn Seri POS-TID + STK
+3. Xác nhận => confirm => Xác nhận","1. Sinh phụ lục đổi TK theo mẫu.
+2. Trạng thái ký = Chờ MC ký; gen link & gửi mail cho MC (email người đại diện).",,High,,
+14,Tạo - Đổi TK (Merchant),Happy,"HĐ Đang hoạt động, ký tay",Kiểm tra tạo phụ lục đổi TK (Merchant) - ký tay,"1. Tạo phụ lục đổi TK với HĐ ký tay
+2. Xác nhận","1. Trạng thái ký = Ký tay; VH = Chờ tiếp nhận.
+2. Sinh 1 bản ghi ở màn Yêu cầu VH xử lý.",,High,,
+15,Tạo - Đổi TK (Merchant),Unhappy,HĐ khác Đang hoạt động,Kiểm tra tạo văn bản khi HĐ chưa/không Đang hoạt động,1. Tạo phụ lục đổi TK với HĐ không Đang hoạt động,1. Trạng thái ký = Nháp; KHÔNG gửi mail ký.,,High,,
+16,Tạo - Đổi TK (Merchant),Field validation,POS đang có yêu cầu chờ duyệt,Kiểm tra Seri POS-TID disable POS đang có yêu cầu chờ duyệt,1. Mở droplist Seri POS-TID,1. POS đang có yêu cầu đổi TK chờ duyệt bị disable (chống tạo trùng).,,High,,
+17,Tạo - Đổi TK (Merchant),Field validation,POS đã gắn 1 TK,Kiểm tra STK disable tài khoản gần nhất đã gắn POS,1. Mở droplist STK,"1. Tài khoản gần nhất đã gắn POS bị disable.
+2. Format hiển thị: Số TK – tên TK.",,Medium,,
+18,Tạo - Đổi TK (Merchant),Happy,Mở STK,Kiểm tra Thêm mới tài khoản (chủ TK mặc định tên MC),"1. STK => Thêm mới
+2. Nhập số TK + chọn Ngân hàng
+3. Lưu","1. Chủ tài khoản mặc định tên MC.
+2. TK mới được tạo hiển thị tại thông tin Merchant.",,Medium,,
+19,Tạo - Đổi TK (Merchant),Field validation,Popup Thêm tài khoản,Kiểm tra ràng buộc Số tài khoản & Ngân hàng khi Thêm mới,"1. Số TK > 50 ký tự
+2. Bỏ trống Ngân hàng","1. Số TK giới hạn 50 ký tự (không giới hạn loại ký tự).
+2. Ngân hàng bắt buộc; list theo masterdata (Tên viết tắt – Tên đầy đủ).",,Medium,,
+20,Tạo - Đổi TK (Merchant),Happy,Đã chọn 1 POS-TID + TK,Kiểm tra Thêm cấu hình cho phép 1 yêu cầu gắn nhiều POS,"1. Nhấn Thêm cấu hình
+2. Chọn thêm Seri POS-TID gắn TK",1. Cho phép thêm nhiều cấu hình POS trong 1 yêu cầu.,,Medium,,
+21,Tạo - Đổi TK (đại diện MC),Happy,"HĐ Đang hoạt động, ký điện tử",Kiểm tra tạo GUQ đổi TK (người đại diện MC),"1. Người nhận = Người đại diện MC
+2. Chọn POS-TID + STK
+3. Xác nhận","1. Sinh Giấy ủy quyền (không cần thẩm định).
+2. Ký điện tử: trạng thái = Chờ BD ký; hiển thị ở chức năng BD ký.",,High,,
+22,Tạo - Đổi TK (đại diện MC),Unhappy,HĐ chưa hoạt động,Kiểm tra GUQ đại diện MC khi HĐ chưa hoạt động,1. Tạo GUQ với HĐ chưa hoạt động,1. Trạng thái = Nháp; không gửi mail.,,Medium,,
+23,Tạo - Đổi TK (NNUQ),Happy,Có NNUQ hồ sơ Đạt,Kiểm tra tạo GUQ đổi TK (NNUQ) khi hồ sơ Đạt + HĐ hoạt động,"1. Người nhận = NNUQ
+2. Chọn CCCD (Đạt) + STK NNUQ
+3. Xác nhận","1. Sinh GUQ; chuỗi BD ký => NNUQ ký => MC ký.
+2. Trạng thái = Chờ BD ký (hiển thị ở chức năng BD ký).",,High,,
+24,Tạo - Đổi TK (NNUQ),Happy,NNUQ hồ sơ Chưa thẩm định,Kiểm tra GUQ NNUQ khi hồ sơ chưa thẩm định,"1. Chọn CCCD trạng thái Chưa thẩm định
+2. Xác nhận",1. Trạng thái = Chờ thẩm định (hồ sơ NNUQ cần thẩm định).,,High,,
+25,Tạo - Đổi TK (NNUQ),Field validation,NNUQ trạng thái khác,Kiểm tra droplist CCCD chỉ cho chọn Đạt/Chưa thẩm định,1. Mở droplist Căn cước/CCCD,"1. Chỉ chọn được CCCD có GUQ trạng thái Đạt hoặc Chưa thẩm định; các trạng thái khác disable.
+2. Format: Căn cước – Họ tên – Trạng thái thẩm định.",,Medium,,
+26,Tạo - Đổi TK (NNUQ),Field validation,Chưa chọn CCCD,"Kiểm tra trường STK chỉ hiện sau khi chọn CCCD, chỉ chọn 1 TK","1. Chưa chọn CCCD => quan sát STK
+2. Chọn CCCD => quan sát STK","1. STK ẩn khi chưa chọn CCCD.
+2. Sau khi chọn: hiện list TK của NNUQ, chỉ cho chọn 1, chủ TK mặc định tên NNUQ.",,Medium,,
+27,Tạo - Cấp bổ sung TID,Happy,HĐ Đang hoạt động,Kiểm tra tạo phụ lục cấp bổ sung TID,"1. Loại = Cấp bổ sung TID/MID
+2. Nhập Số lượng (vd 2)
+3. Khai POS từng dòng
+4. Xác nhận","1. Grid sinh đúng số dòng theo Số lượng.
+2. Sinh phụ lục 03; ký điện tử: Chờ MC ký + gửi mail; sau MC ký => chờ QTRR thẩm định => Gtelpay ký.",,High,,
+28,Tạo - Cấp bổ sung TID,Field validation,,Kiểm tra Số lượng TID chỉ cho số tự nhiên 0–10,1. Nhập 11 / số âm / chữ,1. Chặn; chỉ cho nhập số tự nhiên trong khoảng 0–10.,,Medium,,
+29,Tạo - Cấp bổ sung TID,Field validation,Seri đã cấu hình HĐ khác,Kiểm tra check trùng số seri máy POS,1. Khai seri đã cấu hình ở hợp đồng khác (trạng thái ≠ Hủy/Thanh lý),1. Báo trùng / chặn (seri phải chưa được cấu hình hoặc thuộc HĐ Hủy/Thanh lý).,,High,,
+30,Tạo - Cấp bổ sung TID,Field validation,Grid POS,Kiểm tra ràng buộc Loại máy / Tên viết tắt / Địa chỉ lắp máy,"1. Nhập Loại máy & Tên viết tắt > 20 ký tự
+2. Nhập Địa chỉ > 250 ký tự","1. Loại máy & Tên viết tắt: in hoa không dấu, tối đa 20 ký tự.
+2. Địa chỉ lắp máy: tối đa 250 ký tự.",,Medium,,
+31,Tạo - Đổi phí,Happy,HĐ Đang hoạt động,Kiểm tra tạo phụ lục đổi phí,"1. Loại = Thay đổi phí
+2. Sửa ≥1 loại phí (≥ mốc)
+3. Xác nhận","1. Hiển thị Đại lý, Ngân hàng, MCC, phí hiện tại.
+2. Gen PL đổi phí; ký điện tử: Chờ MC ký + gửi mail.",,High,,
+32,Tạo - Đổi phí,Unhappy,Phí mốc đã cấu hình,Kiểm tra chặn khi nhập phí thấp hơn mốc,1. Nhập phí < mốc đại lý theo MCC/Nhóm/NH,1. Ô phí tô đỏ / chặn xác nhận (phí sửa ≥ phí đã cài đặt).,,High,,
+33,Tạo - Đổi phí,Unhappy,,Kiểm tra bắt buộc đổi ít nhất 1 loại phí,1. Không sửa phí nào => Xác nhận,1. Chặn (bắt buộc thay đổi ít nhất 1 loại phí).,,Medium,,
+34,Tạo - Đổi phí,Field validation,,"Kiểm tra định dạng nhập phí (number, thập phân dấu chấm)",1. Nhập phí với dấu phẩy / ký tự chữ,"1. Chỉ nhận number, phần thập phân ngăn cách bằng dấu chấm.",,Low,,
+35,Xem chi tiết,Happy,Văn bản đổi TK / GUQ,Kiểm tra popup Xem chi tiết danh sách TK gắn với TID,1. Thao tác => Xem chi tiết,"1. Popup hiển thị: Số lượng POS, STT, TID, Số seri POS, STK (Số TK – tên viết tắt NH – chủ TK), Email đối soát, Trạng thái hiệu lực.
+2. Scroll theo thứ tự gắn muộn nhất => sớm nhất.",,High,,
+36,Xem chi tiết,Happy,Có TK hết hiệu lực,Kiểm tra màu Trạng thái hiệu lực trong popup,1. Quan sát Trạng thái hiệu lực,1. Đang hiệu lực = xanh; Hết hiệu lực = đỏ.,,Medium,,
+37,Xem chi tiết,Unhappy,Loại Biên bản/PL phí,Kiểm tra Xem chi tiết chỉ hiển thị với đổi TK / GUQ NNUQ / GUQ đại diện MC,1. Quan sát Thao tác ở các loại văn bản khác,1. Xem chi tiết KHÔNG hiển thị với loại không phải đổi TK/GUQ.,,Medium,,
+38,Sửa văn bản,Happy,Văn bản Nháp / chưa ai ký,Kiểm tra Sửa văn bản,"1. Thao tác => Sửa => đổi thông tin
+2. Xác nhận","1. Cho sửa các trường theo loại yêu cầu; trường Loại yêu cầu disable.
+2. Ghi nhận thông tin mới thay cũ.",,Medium,,
+39,Sửa văn bản,Unhappy,Văn bản đã có người ký,Kiểm tra chặn Sửa khi đã có đối tượng ký,1. Mở Thao tác văn bản đã ký,1. Không cho Sửa.,,High,,
+40,Hủy văn bản,Happy,Văn bản Nháp / chưa ai ký,Kiểm tra Hủy văn bản,1. Thao tác => Hủy => Xác nhận,1. Cập nhật trạng thái hiệu lực = Hủy.,,Medium,,
+41,Hủy văn bản,Unhappy,Văn bản đã có người ký,Kiểm tra chặn Hủy khi đã có đối tượng ký,1. Mở Thao tác văn bản đã ký,1. Không cho Hủy.,,High,,
+42,Gửi lại email ký,Happy,"Chờ MC/NNUQ ký, link hết hạn",Kiểm tra Gửi lại email ký,1. Thao tác => Gửi lại email ký => Xác nhận,1. Gửi lại mail link ký tới email MC / người đại diện / NNUQ tương ứng.,,Medium,,
+43,Gen lại file,Happy,File văn bản gen lỗi,Kiểm tra Gen lại file,1. Thao tác => Gen lại file,1. Hệ thống gen lại file văn bản tương ứng.,,Medium,,

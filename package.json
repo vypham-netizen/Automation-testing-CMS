@@ -1,0 +1,19 @@
+{
+  "name": "cms-automation",
+  "version": "1.0.0",
+  "description": "Playwright test automation framework cho CMS POS",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "seed": "playwright test --config=seed.config.ts",
+    "seed:headed": "playwright test --config=seed.config.ts --headed",
+    "codegen": "playwright codegen http://192.168.1.4:5174"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.0.0",
+    "dotenv": "^16.4.5"
+  }
+}

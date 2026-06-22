@@ -1,0 +1,43 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,Danh sách NNUQ,Happy,TK có quyền Xem,Kiểm tra truy cập danh sách NNUQ,1. Mở Hồ sơ NNUQ → Danh sách NNUQ,"1. Grid đủ cột: STT, Thời gian tạo, Thông tin NNUQ (Họ tên/CCCD/email/SĐT), Trạng thái thẩm định (+lý do), Thao tác.
+2. Sắp xếp giảm dần theo ngày tạo.",,High,,
+2,Danh sách NNUQ,Happy,Có dữ liệu,Kiểm tra tìm kiếm Tên NNUQ / CC-CCCD,1. Nhập một phần tên / CCCD,1. Lọc tương đối bản ghi khớp; giới hạn 255 ký tự.,,Medium,,
+3,Danh sách NNUQ,Happy,Có dữ liệu nhiều trạng thái,Kiểm tra lọc theo Trạng thái thẩm định,1. Mở droplist Trạng thái → chọn,1. Droplist: Đạt / Không đạt / Chờ thẩm định; lọc đúng.,,High,,HỎI BA: filter có gồm 'Yêu cầu chỉnh sửa' không
+4,Danh sách NNUQ,Happy,NNUQ Đạt/Không đạt/Chờ thẩm định,Kiểm tra nút Sửa enable theo trạng thái,1. Quan sát nút Sửa từng trạng thái,1. Sửa disable; chỉ enable khi trạng thái Yêu cầu chỉnh sửa.,,High,,
+5,Danh sách NNUQ,Happy,NNUQ đã thẩm định / đã gắn ủy quyền,Kiểm tra nút Xóa enable theo ràng buộc,1. Quan sát nút Xóa,1. Xóa disable; chỉ enable khi Chờ thẩm định + chưa gắn ủy quyền TID nào.,,High,,
+6,Thêm/Sửa NNUQ,Happy,Có quyền,Kiểm tra thêm mới NNUQ thành công,"1. Thêm mới → upload CCCD trước/sau + Biên bản
+2. Điền đủ trường hợp lệ
+3. Tạo mới","1. Tạo bản ghi trạng thái Chờ thẩm định.
+2. Quay lại + thông báo 'Thêm NNUQ thành công.'",,High,,
+7,Thêm/Sửa NNUQ,Unhappy,CCCD đã tồn tại,Kiểm tra check trùng CC/CCCD,1. Tạo NNUQ với CCCD trùng,1. Không cho tạo (mỗi CCCD chỉ 1 bản ghi).,,High,,
+8,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra CC/CCCD định dạng,1. Nhập chữ / ≠ 12 số,1. Chỉ nhận số; báo 'Số CC/CCCD phải có 12 ký tự'.,,High,,
+9,Thêm/Sửa NNUQ,Unhappy,Email đã tồn tại,Kiểm tra check trùng Email,1. Nhập email trùng NNUQ khác,1. Chặn (email check trùng toàn hệ thống).,,High,,
+10,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra tuổi NNUQ 18-80,1. Nhập ngày sinh cho tuổi <18 hoặc >80,1. Báo 'Tuổi NNUQ phải nằm trong độ tuổi từ 18-80'.,,High,,
+11,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra CCCD hết hạn,1. Ngày hết hạn < ngày hiện tại,1. Báo 'CCCD đã hết hạn. Vui lòng kiểm tra lại ngày hết hạn.',,High,,
+12,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra Họ tên độ dài,"1. Nhập <4 ký tự
+2. Nhập >255 ký tự","1. <4: 'Họ tên phải có ít nhất 4 ký tự'.
+2. >255: 'Họ tên không được vượt quá 255 ký tự'.",,Medium,,
+13,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra bắt buộc các trường,1. Để trống họ tên/CCCD/giới tính/ngày sinh/nơi cấp/ngày cấp/ngày hết hạn/địa chỉ/quốc tịch → Tạo mới,1. Báo lỗi 'Vui lòng nhập/chọn …' tương ứng từng trường.,,High,,
+14,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra upload file,"1. File >5MB
+2. Sai định dạng
+3. Chưa tải file","1. >5MB: 'Dung lượng file vượt quá giới hạn cho phép (5MB)'.
+2. Chỉ pdf/jpg/png.
+3. Chưa tải: 'File chưa được tải lên'.",,High,,
+15,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra SĐT định dạng,1. Nhập chữ / >10 ký tự,1. Chỉ nhận số (cho số 0 đầu); giới hạn 10 ký tự.,,Medium,,
+16,Thêm/Sửa NNUQ,Field validation,Màn Thêm,Kiểm tra Email định dạng,1. Nhập email sai chuẩn,1. Chặn (email đúng định dạng chuẩn).,,Medium,,
+17,Thêm/Sửa NNUQ,Happy,NNUQ trạng thái Yêu cầu chỉnh sửa,Kiểm tra sửa NNUQ,"1. Icon Sửa → refill → đổi thông tin
+2. Cập nhật → popup xác nhận → Xác nhận","1. Cập nhật thông tin; trạng thái về Chờ thẩm định.
+2. CC/CCCD + Họ tên disable.",,High,,
+18,Thêm/Sửa NNUQ,Happy,Đang nhập dở,Kiểm tra Quay lại không lưu,1. Nhập dở → Quay lại,"1. Quay màn trước, không thực hiện thêm mới.",,Low,,
+19,Chi tiết NNUQ,Happy,Có bản ghi,Kiểm tra xem chi tiết NNUQ,1. Icon Xem chi tiết,"1. Hiển thị đủ: họ tên, giới tính, CCCD, quốc tịch, ngày sinh/cấp/hết hạn, SĐT, email, địa chỉ TT/hiện tại, TK ngân hàng, Hồ sơ.",,High,,
+20,Chi tiết NNUQ,Happy,NNUQ có hồ sơ,Kiểm tra xem/tải file hồ sơ,"1. Mở/tải CCCD trước/sau, Biên bản xác minh",1. Xem & tải được file.,,Low,,
+21,Chi tiết NNUQ,Happy,NNUQ Chờ thẩm định,Kiểm tra hiển thị Đề xuất xử lý / Nhập kết quả,1. Quan sát màn chi tiết,1. View 'Đề xuất xử lý' + nút Nhập kết quả chỉ hiện khi Chờ thẩm định.,,Medium,,
+22,Thẩm định NNUQ,Happy,"NNUQ Chờ thẩm định, có quyền Nhập KQ",Kiểm tra thẩm định NNUQ Đạt,1. Chi tiết → Nhập kết quả → Đạt → Xác nhận,1. Trạng thái thẩm định → Đạt.,,High,,
+23,Thẩm định NNUQ,Happy,NNUQ Chờ thẩm định,Kiểm tra thẩm định Không đạt,1. Nhập kết quả → Không đạt → nhập Lý do → Xác nhận,1. Trạng thái → Không đạt; hiển thị lý do dưới trạng thái.,,High,,
+24,Thẩm định NNUQ,Happy,NNUQ Chờ thẩm định,Kiểm tra thẩm định Yêu cầu chỉnh sửa,1. Nhập kết quả → Yêu cầu chỉnh sửa → nhập Lý do → Xác nhận,1. Trạng thái → Yêu cầu chỉnh sửa (mở khóa nút Sửa).,,High,,
+25,Thẩm định NNUQ,Happy,NNUQ đang ủy quyền tại HĐ,Kiểm tra thẩm định khi NNUQ đang có ủy quyền,1. Nhập kết quả thẩm định (bất kỳ) → Xác nhận,1. Các ủy quyền của NNUQ tại HĐ → đổi về Chờ BD ký.,,High,,
+26,Thẩm định NNUQ,Field validation,Kết quả Không đạt / YC chỉnh sửa,Kiểm tra bắt buộc Lý do,1. Bỏ trống Lý do → Xác nhận,1. Chặn (Lý do bắt buộc).,,High,,
+27,Thẩm định NNUQ,Field validation,Popup thẩm định,Kiểm tra Lý do ẩn/hiện theo kết quả,"1. Chọn Đạt
+2. Đổi sang Không đạt / YC chỉnh sửa","1. Đạt: ẩn Lý do.
+2. Không đạt / YC chỉnh sửa: hiện Lý do.",,Medium,,
+28,Thẩm định NNUQ,Unhappy,TK thiếu quyền,Kiểm tra phân quyền Nhập KQ thẩm định / Sửa / Xem & tải,1. Thao tác tương ứng khi thiếu quyền,1. Ẩn/chặn chức năng theo quyền.,,Medium,,

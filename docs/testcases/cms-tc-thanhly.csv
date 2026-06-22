@@ -1,0 +1,50 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,Thanh lý - Điều kiện,Happy,HĐ Đang hoạt động & đã đóng hết TID,Kiểm tra chức năng Thanh lý enable khi đủ điều kiện,"1. Mở Danh sách hợp đồng
+2. Quan sát chức năng Thanh lý hợp đồng của HĐ Đang hoạt động + đã đóng hết TID",1. Chức năng Thanh lý hợp đồng enable.,,High,,
+2,Thanh lý - Điều kiện,Unhappy,HĐ khác Đang hoạt động,Kiểm tra Thanh lý disable khi HĐ không ở trạng thái Đang hoạt động,"1. Chọn HĐ trạng thái khác Đang hoạt động
+2. Quan sát chức năng Thanh lý",1. Chức năng Thanh lý disable.,,High,,
+3,Thanh lý - Điều kiện,Unhappy,"HĐ Đang hoạt động, còn TID chưa đóng",Kiểm tra Thanh lý disable khi còn TID chưa đóng,"1. HĐ Đang hoạt động nhưng còn ≥1 TID chưa Đóng
+2. Quan sát chức năng Thanh lý",1. Chức năng Thanh lý disable (chỉ enable khi tất cả TID đã Đóng).,,High,,
+4,Thanh lý - Điều kiện,Unhappy,TK không có quyền Thanh lý,Kiểm tra chặn khi TK không được cấp quyền Thanh lý hợp đồng,"1. Đăng nhập TK không quyền
+2. Mở HĐ",1. Không thấy/không dùng được chức năng Thanh lý.,,Medium,,
+5,Thanh lý - Điều kiện,Happy,HĐ ký tay / ký điện tử,Kiểm tra phương thức ký thanh lý khớp phương thức ký của HĐ,"1. Thanh lý HĐ ký tay
+2. Thanh lý HĐ ký điện tử","1. HĐ ký tay => thanh lý theo ký tay.
+2. HĐ ký điện tử => thanh lý theo ký số điện tử.",,High,,
+6,Thanh lý - Ký điện tử,Happy,"HĐ ký điện tử, đủ điều kiện",Kiểm tra mở popup Xác nhận thanh lý,1. Nhấn Thanh lý hợp đồng,1. Hiển thị popup Xác nhận thanh lý hợp đồng (Xác nhận / Đóng).,,High,,
+7,Thanh lý - Ký điện tử,Happy,Popup Xác nhận,Kiểm tra Xác nhận thanh lý => gen biên bản & cập nhật trạng thái,1. Nhấn Xác nhận trong popup,"1. Loading + gen Biên bản thanh lý.
+2. HĐ trạng thái = Thanh lý; trạng thái xử lý = TL - Chờ MC ký.
+3. Hiển thị popup xem nội dung BB; BB ở Quản lý văn bản trạng thái Chờ MC ký.
+4. Gửi email link ký BB đến email người đại diện MC.",,High,,
+8,Thanh lý - Ký điện tử,Happy,BB ở TL - Chờ MC ký,Kiểm tra sau khi MC ký biên bản thanh lý thành công,"1. MC mở link, ký BB thành công","1. HĐ giữ Thanh lý.
+2. Trạng thái xử lý: TL - Chờ MC ký => TL - Chờ GtelPay ký.
+3. Gửi mail ký BB đến lãnh đạo; BB hiển thị ở menu chờ GtelPay ký (Chờ Gtelpay ký).",,High,,
+9,Thanh lý - Ký điện tử,Happy,BB ở TL - Chờ GtelPay ký,Kiểm tra sau khi Lãnh đạo ký số biên bản thanh lý thành công,1. Lãnh đạo ký số BB thành công,"1. HĐ giữ Thanh lý.
+2. Trạng thái xử lý: TL - Chờ GtelPay ký => TL - Đã thanh lý.",,High,,
+10,Thanh lý - Ký điện tử,Happy,HĐ TL - Đã thanh lý,Kiểm tra HĐ sau khi Đã thanh lý chỉ xem & văn bản đi kèm hết hiệu lực,"1. Mở HĐ TL - Đã thanh lý
+2. Mở các văn bản đi kèm (GUQ, Phụ lục)","1. HĐ chỉ cho xem, không thao tác được chức năng.
+2. GUQ/Phụ lục liên quan => trạng thái hiệu lực = Hết hiệu lực.",,High,,
+11,Thanh lý - Ký điện tử,Happy,HĐ TL - Đã thanh lý,Kiểm tra HĐ đã thanh lý vẫn thực hiện được đối soát,1. Thực hiện đối soát cho HĐ đã thanh lý,1. Vẫn cho đối soát (theo note BA).,,Low,,
+12,Thanh lý - Ký điện tử,Happy,Popup Xác nhận,Kiểm tra nút Đóng popup Xác nhận thanh lý,1. Nhấn Đóng,"1. Đóng popup, không thực hiện thanh lý.",,Low,,
+13,Thanh lý - Ký điện tử,Unhappy,BB ở TL - Chờ MC ký,Kiểm tra thứ tự ký: GtelPay chưa ký được khi MC chưa ký,"1. MC chưa ký
+2. Lãnh đạo thử ký BB",1. Chưa chuyển TL - Chờ GtelPay ký; GtelPay chưa ký được (đúng thứ tự MC => GtelPay).,,Medium,,
+14,Thanh lý - Gửi lại email ký,Happy,"Mail lỗi / link hết hạn >48h, MC chưa ký",Kiểm tra nút Gửi lại email ký hiển thị đúng điều kiện,"1. Sau 48h từ khi gửi link mà MC chưa ký (hoặc gửi mail lỗi)
+2. Quan sát Danh sách HĐ (Trạng thái xử lý) / Chi tiết HĐ (View đề xuất xử lý)",1. Hiển thị nút Gửi lại email ký.,,Medium,,
+15,Thanh lý - Gửi lại email ký,Happy,Nút Gửi lại hiển thị,Kiểm tra Gửi lại email ký biên bản,"1. Nhấn Gửi lại email ký => popup Xác nhận
+2. Nhấn Xác nhận","1. Gửi lại email link ký BB mới đến email người đại diện MC.
+2. Ẩn nút Gửi lại email ký sau khi gửi thành công.",,Medium,,
+16,Thanh lý - Gửi lại email ký,Unhappy,Link còn hạn hoặc MC đã ký,Kiểm tra nút Gửi lại KHÔNG hiển thị khi chưa đủ điều kiện,"1. BB chưa quá 48h hoặc MC đã ký
+2. Quan sát",1. Nút Gửi lại email ký không hiển thị.,,Medium,,
+17,Thanh lý - Ký tay,Happy,"HĐ ký tay, đủ điều kiện",Kiểm tra thanh lý ký tay: Xác nhận => gen BB & cập nhật trạng thái,"1. Nhấn Thanh lý hợp đồng => popup Xác nhận
+2. Nhấn Xác nhận","1. Loading + gen BB.
+2. Hiển thị popup xem BB; BB ở QL văn bản trạng thái Chờ xử lý; VH = Chờ tiếp nhận.
+3. Sinh 1 bản ghi loại Thanh lý ở màn Yêu cầu VH xử lý (Chờ tiếp nhận).
+4. HĐ = Thanh lý; trạng thái xử lý = TL - Chờ xử lý + hiển thị nút Tải lên biên bản thanh lý.",,High,,
+18,Thanh lý - Ký tay,Happy,"TL - Chờ xử lý, có nút Tải lên",Kiểm tra Tải lên biên bản thanh lý đã ký (file hợp lệ),"1. Nhấn Tải lên biên bản thanh lý
+2. Chọn file .pdf < 15MB",1. Tải lên thành công.,,High,,
+19,Thanh lý - Ký tay,Field validation,Có nút Tải lên,Kiểm tra chặn file tải lên quá dung lượng,1. Tải lên file > 15MB,1. Báo lỗi 'Vui lòng tải lên file < 15MB'.,,Medium,,
+20,Thanh lý - Ký tay,Field validation,Có nút Tải lên,Kiểm tra chặn file tải lên sai định dạng,1. Tải lên file không phải .pdf,1. Báo lỗi 'Vui lòng tải file định dạng .pdf'.,,Medium,,
+21,Thanh lý - View biên bản,Happy,Sau xác nhận thanh lý / có BB,Kiểm tra popup view Biên bản thanh lý + Tải file,"1. Xác nhận thanh lý (hoặc QL văn bản mở BB)
+2. Nhấn Tải file","1. Hiển thị popup xem BB.
+2. Tải xuống file tên 'Biên bản thanh lý_[số hợp đồng]'.",,Medium,,
+22,Thanh lý - View biên bản,Happy,Popup view BB,Kiểm tra Đóng popup view biên bản,1. Nhấn Đóng,1. Đóng popup xem biên bản thanh lý.,,Low,,
+23,Thanh lý - View biên bản,Happy,HĐ đã thanh lý,Kiểm tra xem lại BB qua menu Quản lý văn bản ở Chi tiết hợp đồng,1. Chi tiết HĐ => Quản lý văn bản => mở Biên bản thanh lý,1. Mở lại được popup xem BB; tải file được.,,Medium,,

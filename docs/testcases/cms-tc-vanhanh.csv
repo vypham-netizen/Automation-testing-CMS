@@ -1,0 +1,56 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,DS Yêu cầu VH,Happy,TK có quyền Xem,Kiểm tra truy cập màn Danh sách yêu cầu VH xử lý,1. Mở menu Yêu cầu Vận hành xử lý,"1. Hiển thị danh sách.
+2. Mặc định lọc Trạng thái = Chờ tiếp nhận.
+3. 10 bản ghi/trang (đổi được), mới nhất lên đầu.",,High,,
+2,DS Yêu cầu VH,Unhappy,TK không có quyền,Kiểm tra chặn khi TK không có quyền Xem/Xử lý,"1. Đăng nhập TK không quyền
+2. Mở menu",1. Không truy cập được / ẩn chức năng.,,Medium,,
+3,DS Yêu cầu VH,Happy,Có dữ liệu,Kiểm tra grid hiển thị đủ cột,1. Quan sát các cột,"1. STT, Ngày yêu cầu (dd/MM/yyyy), Thông tin Merchant (ID, Tên), Loại yêu cầu, Thông tin cũ, Thông tin mới, Tài liệu đính kèm, Ngày hiệu lực, Trạng thái, Người/Ngày xử lý, Nội dung xử lý, Xử lý, Lịch sử xử lý.",,High,,
+4,DS Yêu cầu VH,Happy,Có dữ liệu nhiều loại,Kiểm tra lọc theo Loại yêu cầu,"1. Mở dropdown Loại yêu cầu
+2. Chọn lần lượt từng loại","1. Mặc định Tất cả.
+2. Danh sách: Tất cả, Thay đổi tài khoản thanh toán, thay đổi phí, yêu cầu cấp bổ sung TID, thanh lý, khác.
+3. Lọc đúng theo loại.",,High,,
+5,DS Yêu cầu VH,Happy,Có dữ liệu nhiều trạng thái,Kiểm tra lọc theo Trạng thái,"1. Mở dropdown Trạng thái
+2. Chọn lần lượt","1. Mặc định Chờ tiếp nhận.
+2. Danh sách: Tất cả, Chờ tiếp nhận, Đang xử lý, Đã tiếp nhận, Từ chối.
+3. Lọc đúng.",,High,,
+6,DS Yêu cầu VH,Happy,Có dữ liệu khớp,Kiểm tra tìm kiếm tương đối + copy/paste,1. Nhập (paste) Tên MC / TID / MID / tên viết tắt,1. Lọc tương đối ra bản ghi khớp; cho copy/paste.,,Medium,,
+7,DS Yêu cầu VH,Unhappy,Không có dữ liệu khớp,Kiểm tra thông báo khi tìm không có kết quả,1. Nhập từ khoá không tồn tại,1. Hiển thị 'Không tìm thấy dữ liệu hợp lệ'.,,Medium,,
+8,DS Yêu cầu VH,Field validation,TT cũ/mới > 500 ký tự,Kiểm tra Xem thêm/Rút gọn Thông tin cũ/mới,"1. Quan sát bản ghi có TT cũ/mới > 500 ký tự
+2. Nhấn Xem thêm / Rút gọn",1. Hiển thị tối đa 500 ký tự + Xem thêm/Rút gọn; nhấn hiển thị/thu gọn đúng.,,Low,,
+9,DS Yêu cầu VH,Happy,Yêu cầu đổi TK,Kiểm tra Thông tin cũ/mới của loại Thay đổi tài khoản thanh toán,1. Mở bản ghi loại Thay đổi TK,1. Hiển thị các TID + tài khoản cũ / tài khoản mới.,,Medium,,
+10,DS Yêu cầu VH,Happy,Yêu cầu đổi phí,Kiểm tra Thông tin cũ/mới của loại Thay đổi phí,1. Mở bản ghi loại Thay đổi phí,1. Hiển thị loại thẻ + phí cũ / phí mới.,,Medium,,
+11,DS Yêu cầu VH,Happy,Yêu cầu cấp BS TID,Kiểm tra Thông tin của loại Cấp bổ sung TID (chỉ TT mới),1. Mở bản ghi loại Cấp bổ sung TID,1. Chỉ có thông tin mới: số TID cấp bổ sung + thông tin từng TID.,,Medium,,
+12,DS Yêu cầu VH,Happy,Yêu cầu thanh lý,Kiểm tra Thông tin của loại Thanh lý (chỉ TT mới),1. Mở bản ghi loại Thanh lý,1. Chỉ có thông tin mới: số hợp đồng.,,Medium,,
+13,DS Yêu cầu VH,Happy,Yêu cầu có file,Kiểm tra Tài liệu đính kèm hiển thị/tải,1. Mở/tải tài liệu đính kèm,1. Hiển thị & tải được file đính kèm.,,Low,,
+14,DS Yêu cầu VH,Happy,Đã có lịch sử xử lý,Kiểm tra popup Lịch sử xử lý,1. Nhấn icon Lịch sử xử lý,"1. Popup: STT, Thời gian (hh:mm dd/MM/yyyy), Người xử lý, Trạng thái xử lý, Ghi chú (Xem thêm/Thu gọn); mới nhất lên đầu, 10/trang.",,Medium,,
+15,DS Yêu cầu VH,Happy,Bản ghi Chờ tiếp nhận/Đang xử lý,Kiểm tra nút Xử lý hiển thị đúng trạng thái,1. Quan sát cột Xử lý theo trạng thái,1. Nút Xử lý chỉ hiện với Chờ tiếp nhận / Đang xử lý.,,Medium,,
+16,DS Yêu cầu VH,Happy,Yêu cầu ký điện tử đã ký đủ,Kiểm tra yêu cầu ký điện tử mặc định Đã tiếp nhận,1. Quan sát yêu cầu ký điện tử đã đủ đối tượng ký,"1. Mặc định trạng thái Đã tiếp nhận, vẫn hiển thị trong danh sách (không cần VH xử lý tiếp).",,Medium,,
+17,Xử lý yêu cầu,Happy,Bản ghi Chờ tiếp nhận,Kiểm tra mở popup Xử lý yêu cầu,1. Nhấn Xử lý,1. Hiển thị popup Xử lý yêu cầu tương ứng Loại yêu cầu.,,High,,
+18,Xử lý yêu cầu,Happy,Popup Xử lý,Kiểm tra Xử lý => Đã tiếp nhận (đổi TK),"1. Trạng thái = Đã tiếp nhận
+2. Nhập ghi chú + Ngày hiệu lực
+3. Upload file (pdf/png/jpg <15MB)
+4. Xác nhận","1. Cập nhật trạng thái VH văn bản = Đã tiếp nhận; lưu Ngày hiệu lực + file.
+2. Ghi lịch sử xử lý.
+3. Đổi TK => log thêm lịch sử thay đổi TID (TID-STK-NH-CTK cũ/mới).",,High,,
+19,Xử lý yêu cầu,Happy,Popup Xử lý (bs TID),Kiểm tra Xử lý => Đã tiếp nhận (cấp bổ sung TID) log lịch sử TID,"1. Trạng thái = Đã tiếp nhận + đủ trường
+2. Xác nhận",1. Văn bản = Đã tiếp nhận; log lịch sử thay đổi TID (Yêu cầu cấp BS).,,High,,
+20,Xử lý yêu cầu,Happy,Popup Xử lý,Kiểm tra Xử lý => Từ chối,"1. Trạng thái = Từ chối
+2. Nhập lý do (≥5 ký tự)
+3. Xác nhận",1. Cập nhật trạng thái VH văn bản = Từ chối; ghi lịch sử.,,High,,
+21,Xử lý yêu cầu,Happy,Popup Xử lý,Kiểm tra Xử lý => Đang xử lý,"1. Trạng thái = Đang xử lý
+2. Nhập ghi chú
+3. Xác nhận",1. Trạng thái = Đang xử lý; nút Xử lý vẫn còn để xử lý tiếp.,,Medium,,
+22,Xử lý yêu cầu,Field validation,Popup Xử lý,Kiểm tra Upload file theo từng loại + ràng buộc định dạng/dung lượng,"1. Quan sát label Upload theo loại
+2. Upload pdf/png/jpg <15MB; thử sai định dạng / >15MB","1. Label Upload đổi theo loại yêu cầu.
+2. Cho pdf/png/jpg <15MB; sai định dạng/quá dung lượng bị chặn.
+3. Hiển thị tên file + icon xóa; xóa cho tải lại.",,Medium,,
+23,Xử lý yêu cầu,Field validation,Popup Xử lý,Kiểm tra bắt buộc Trạng thái xử lý,1. Không chọn trạng thái => Xác nhận,1. Báo 'Vui lòng chọn trạng thái xử lý'.,,High,,
+24,Xử lý yêu cầu,Field validation,Trạng thái = Đang xử lý,Kiểm tra bắt buộc Nội dung + tối thiểu 5 ký tự,"1. Để trống nội dung => Xác nhận
+2. Nhập < 5 ký tự","1. Trống: 'Vui lòng nhập nội dung'.
+2. < 5 ký tự: 'Nhập tối thiểu 5 ký tự'.",,Medium,,HỎI BA: spec mâu thuẫn ghi chú bắt buộc/không bắt buộc khi Đang xử lý
+25,Xử lý yêu cầu,Field validation,Trạng thái = Từ chối,Kiểm tra bắt buộc Lý do từ chối + tối thiểu 5 ký tự,"1. Để trống lý do => Xác nhận
+2. Nhập < 5 ký tự","1. Trống: 'Vui lòng nhập lý do từ chối'.
+2. < 5 ký tự: 'Nhập tối thiểu 5 ký tự'.",,High,,
+26,Xử lý yêu cầu,Field validation,Popup Xử lý,Kiểm tra bắt buộc Ngày hiệu lực,1. Không chọn ngày hiệu lực => Xác nhận,1. Báo 'Vui lòng chọn ngày hiệu lực'.,,High,,
+27,Xử lý yêu cầu,Happy,Popup Xử lý,Kiểm tra nút Xác nhận chỉ active khi đủ dữ liệu,1. Quan sát nút Xác nhận khi thiếu / đủ trường,1. Thiếu trường: Xác nhận disable; đủ: enable.,,Medium,,
+28,Xử lý yêu cầu,Happy,"Popup Xử lý, đang nhập dở",Kiểm tra Đóng popup không lưu,1. Nhập dở => nhấn Đóng,1. Đóng popup; không lưu thông tin.,,Low,,

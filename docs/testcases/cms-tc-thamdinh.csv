@@ -1,0 +1,40 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,Thẩm định phụ lục,Happy,TK có quyền Xem/Thẩm định,Kiểm tra truy cập màn Danh sách phụ lục chờ thẩm định,"1. Mở menu Thẩm định hồ sơ, phụ lục
+2. Vào Thẩm định phụ lục hợp đồng","1. Hiển thị Grid danh sách.
+2. Ô đếm 'Chờ thẩm định' hiển thị số lượng màu đỏ.",,High,,
+2,Thẩm định phụ lục,Unhappy,TK không có quyền Thẩm định,Kiểm tra chặn khi TK không có quyền Thẩm định phụ lục,"1. Đăng nhập TK không quyền
+2. Truy cập menu / nhấn Thẩm định",1. Không truy cập được / ẩn nút Thẩm định (chỉ Xem nếu có quyền Xem).,,High,,
+3,Thẩm định phụ lục,Happy,Có dữ liệu,Kiểm tra Grid hiển thị đủ cột,1. Quan sát các cột,"1. STT, Ngày yêu cầu, Số phụ lục hợp đồng, Thông tin merchant, Loại yêu cầu (Yêu cầu bổ sung TID), Trạng thái, Thao tác.",,High,,
+4,Thẩm định phụ lục,Happy,Có dữ liệu,Kiểm tra tìm kiếm tương đối theo Tên merchant,1. Nhập một phần tên merchant,1. Lọc tương đối bản ghi khớp; cho nhập không giới hạn loại ký tự.,,Medium,,
+5,Thẩm định phụ lục,Unhappy,Không có dữ liệu khớp,Kiểm tra tìm kiếm không có kết quả,1. Nhập tên merchant không tồn tại,1. Grid trống / thông báo không có dữ liệu.,,Medium,,
+6,Thẩm định phụ lục,Happy,Có dữ liệu,Kiểm tra lọc theo khoảng Ngày yêu cầu,"1. Chọn Từ ngày - Đến ngày (DD/MM/YYYY, chọn lịch)",1. Lọc theo ngày MC ký phụ lục thành công.,,Medium,,
+7,Thẩm định phụ lục,Field validation,Bộ lọc ngày,Kiểm tra nhập sai định dạng ngày,1. Nhập ngày sai định dạng,1. Thông báo 'Ngày không đúng định dạng'.,,Medium,,
+8,Thẩm định phụ lục,Happy,Có dữ liệu nhiều trạng thái,Kiểm tra lọc theo Trạng thái,"1. Mở droplist Trạng thái
+2. Chọn lần lượt","1. Droplist: Tất cả, Chờ thẩm định, Đạt, Không đạt.
+2. Lọc đúng theo trạng thái.",,High,,
+9,Thẩm định phụ lục,Happy,Bản ghi Chờ thẩm định,Kiểm tra cột Thao tác hiển thị nút Thẩm định,1. Quan sát bản ghi Chờ thẩm định,1. Chỉ hiển thị nút Thẩm định (không có Xem).,,High,,
+10,Thẩm định phụ lục,Happy,Bản ghi đã thẩm định,Kiểm tra cột Thao tác hiển thị nút Xem,1. Quan sát bản ghi Đạt / Không đạt,1. Chỉ hiển thị nút Xem (không có Thẩm định).,,High,,
+11,Thẩm định phụ lục,Happy,Bản ghi đổi phí/đổi TK tồn tại,Kiểm tra chỉ phụ lục cấp bổ sung TID vào hàng đợi,1. Quan sát danh sách phụ lục,1. Chỉ phụ lục Yêu cầu bổ sung TID hiển thị; đổi phí/đổi TK không vào màn thẩm định.,,High,,
+12,Thẩm định phụ lục,Happy,Phụ lục chưa MC ký,Kiểm tra bản ghi chỉ xuất hiện sau khi MC ký,"1. Tạo phụ lục cấp TID nhưng MC chưa ký
+2. Quan sát hàng đợi thẩm định",1. Phụ lục chưa MC ký không xuất hiện; xuất hiện sau khi MC ký thành công.,,High,,
+13,Popup thẩm định,Happy,Bản ghi Chờ thẩm định,Kiểm tra mở popup thẩm định,1. Nhấn nút Thẩm định,"1. Hiển thị popup: Tải xuống, Preview phụ lục, Kết quả thẩm định, (Lý do), Xác nhận, Đóng.",,High,,
+14,Popup thẩm định,Happy,Popup thẩm định,Kiểm tra Preview nội dung phụ lục,1. Quan sát vùng Preview,1. Hiển thị nội dung file phụ lục.,,Medium,,
+15,Popup thẩm định,Happy,Popup thẩm định,Kiểm tra Tải xuống file phụ lục,1. Nhấn Tải xuống,1. Hệ thống tải file phụ lục.,,Low,,
+16,Popup thẩm định,Happy,Popup thẩm định,Kiểm tra thẩm định Đạt,"1. Kết quả thẩm định = Đạt
+2. Nhấn Xác nhận","1. Trạng thái ký phụ lục → Chờ GtelPay ký.
+2. Gửi mail thông báo lãnh đạo.
+3. Phụ lục hiển thị ở DS Chờ GtelPay ký.
+4. Ghi lịch sử xử lý hợp đồng.",,High,,
+17,Popup thẩm định,Happy,Popup thẩm định,Kiểm tra thẩm định Không đạt,"1. Kết quả = Không đạt
+2. Nhập Lý do
+3. Nhấn Xác nhận","1. Trạng thái hiệu lực phụ lục → Huỷ.
+2. Trạng thái ký → Không đạt.
+3. Ghi lịch sử xử lý hợp đồng.",,High,,
+18,Popup thẩm định,Field validation,Popup thẩm định,Kiểm tra bắt buộc Kết quả thẩm định,1. Không chọn Kết quả → Xác nhận,1. Chặn (Kết quả thẩm định bắt buộc).,,High,,
+19,Popup thẩm định,Field validation,Kết quả = Không đạt,Kiểm tra bắt buộc Lý do khi Không đạt,"1. Chọn Không đạt, bỏ trống Lý do → Xác nhận",1. Chặn (Lý do bắt buộc khi Không đạt).,,High,,
+20,Popup thẩm định,Field validation,Popup thẩm định,Kiểm tra Lý do ẩn/hiện theo kết quả,"1. Chọn Đạt
+2. Đổi sang Không đạt","1. Đạt: ẩn ô Lý do.
+2. Không đạt: hiện ô Lý do.",,Medium,,
+21,Popup thẩm định,Happy,Bản ghi đã thẩm định,Kiểm tra popup Xem văn bản (read-only),1. Nhấn Xem,1. Mở popup xem nội dung phụ lục; không có ô nhập kết quả.,,Medium,,
+22,Popup thẩm định,Happy,Popup thẩm định,Kiểm tra Đóng popup,1. Nhấn Đóng,"1. Đóng popup, không thay đổi dữ liệu.",,Low,,
+23,Popup thẩm định,Field validation,Có tickbox chọn hàng loạt,Kiểm tra thực hiện hàng loạt khi chọn 0 bản ghi,1. Không tick bản ghi nào → thực hiện hàng loạt,1. Chặn (tối thiểu 1 bản ghi).,,Medium,,HỎI BA: tickbox 'ký hàng loạt' trong màn thẩm định — QTRR thẩm định hàng loạt? Kết quả áp cho cả lô thế nào?

@@ -1,0 +1,48 @@
+﻿ID,Module,Loại,Pre-condition,Summary,Step,Expected,Actual,Priority,Bug information,Note
+1,Link ký điện tử,Happy,"Link chưa ký, còn hạn 48h",Truy cập link còn hiệu lực hiển thị màn Thông tin,1. Mở link ký,"1. Hiển thị Tổ chức/HKD (tên MC), Số HĐ, (Số GUQ/PL), Người đại diện/NNUQ, Email mã hóa ([2 đầu]***[1 cuối]@domain), Ngân hàng; có nút Ký.",,High,,
+2,Link ký điện tử,Unhappy,Văn bản đã ký,Truy cập link đã ký,1. Mở lại link đã ký,"1. Hiển thị màn 'đã được ký', không cho ký lại.",,High,,
+3,Link ký điện tử,Unhappy,Quá 48h từ lúc cấp link,Truy cập link hết hiệu lực,1. Mở link quá 48h,1. Hiển thị màn link hết hiệu lực (BD gen lại + gửi mail mới).,,High,,
+4,OTP xác thực,Happy,Màn Thông tin,Gửi OTP xác thực truy cập + nhập đúng,"1. Bấm nút Ký
+2. Nhận OTP 6 số qua email
+3. Nhập đúng → Xác nhận","1. Gửi OTP tới đúng email.
+2. Nhập đúng → chuyển màn Ký điện tử (email đầy đủ + Ngành nghề-MCC + Preview).",,High,,
+5,OTP xác thực,Field validation,Màn nhập OTP,"View OTP chỉ nhận số, auto focus",1. Nhập chữ / ký tự đặc biệt,1. Chỉ nhận số 0-9; tự focus sang ô kế tiếp.,,Low,,
+6,OTP xác thực,Field validation,Màn nhập OTP,Nút Xác nhận enable khi đủ 6 số,"1. Nhập < 6 số
+2. Nhập đủ 6 số","1. < 6 số: Xác nhận disable.
+2. Đủ 6 số: enable.",,Medium,,
+7,OTP xác thực,Unhappy,Màn nhập OTP,Nhập sai OTP,1. Nhập OTP sai → Xác nhận,1. Báo 'Mã OTP không đúng. Vui lòng nhập lại.',,High,,
+8,OTP xác thực,Unhappy,Màn nhập OTP,Nhập sai OTP 5 lần liên tiếp,1. Nhập sai 5 lần,1. Khóa luồng ký trong ngày; báo 'Bạn đã nhập sai mã OTP 5 lần. Vui lòng thử lại vào ngày hôm sau.'; mở khóa 0h hôm sau.,,High,,
+9,OTP xác thực,Unhappy,OTP đã gửi >2 phút,OTP hết hạn,1. Nhập OTP cũ (>2 phút),1. Báo 'Mã OTP đã hết hạn. Vui lòng nhập mã khác.',,High,,
+10,OTP xác thực,Field validation,Vừa gửi OTP,Không cho resend trong 2 phút,1. Quan sát trong 2 phút sau khi gửi,"1. Textlink 'Gửi lại' ẩn, hiển thị countdown; hết 2 phút mới hiện link.",,Medium,,
+11,OTP xác thực,Happy,Hết countdown 2 phút,Gửi lại OTP,1. Bấm Gửi lại,1. Sinh OTP mới + gửi mail; noti 'Mã OTP… đã được gửi tới email…'; OTP cũ mất hiệu lực.,,Medium,,
+12,OTP xác thực,Unhappy,Đã gửi lại 5 lần trong ngày,Gửi lại OTP lần thứ 6,1. Bấm Gửi lại lần 6,1. Không gửi; báo 'Vượt quá số lần gửi lại mã OTP trong ngày…' / 'Bạn đã sử dụng hết 5 lần giới hạn gửi OTP qua email.',,High,,
+13,OTP xác thực,Unhappy,Lỗi gửi mail hệ thống,Hệ thống gửi OTP lỗi,1. Bấm Ký / Gửi lại khi hệ thống lỗi,1. Báo 'Gửi mã OTP bị lỗi. Vui lòng gửi lại.',,Medium,,
+14,OTP xác thực,Unhappy,OTP gửi cho email khác,OTP đúng nhưng sai email người ký,1. Nhập OTP của email khác,1. Không chấp nhận (OTP chỉ hợp lệ với đúng email người ký).,,High,,
+15,Màn Ký điện tử,Field validation,"Màn ký, chưa đủ điều kiện",Nút Ký điện tử active khi tick + scroll hết,"1. Chưa tick checkbox / chưa scroll hết file
+2. Tick + scroll cuối","1. Chưa đủ: Ký điện tử disable.
+2. Tick điều khoản + đọc hết (scroll cuối) → active.",,High,,
+16,Màn Ký điện tử,Happy,Màn ký GUQ / phụ lục,Bảng thông tin tài khoản thanh toán,1. Quan sát bảng TK thanh toán,"1. Hiển thị máy POS, STK nhận thanh toán, email; TID/MID để trống (chưa phát triển).",,Medium,,
+17,Màn Ký điện tử,Happy,Có link hợp lệ,Mã hóa email theo màn,1. So màn Thông tin vs màn Ký,"1. Màn Thông tin: email mã hóa.
+2. Màn Ký: email đầy đủ.",,Low,,
+18,Từ chối ký,Happy,"Màn ký HĐ, chưa ký",Từ chối ký hợp đồng,"1. Bấm Từ chối ký
+2. Nhập Lý do (≤255)
+3. Xác nhận",1. HĐ → HĐ - MC từ chối ký; lưu lý do; link hết hiệu lực; ghi lịch sử.,,High,,
+19,Từ chối ký,Field validation,Popup từ chối (HĐ),Validate Lý do từ chối,"1. Bỏ trống lý do
+2. Nhập >255 ký tự
+3. Bấm Đóng","1. Trống: Xác nhận disable.
+2. Chặn >255 ký tự.
+3. Đóng = không lưu.",,Medium,,
+20,Từ chối ký,Happy,Văn bản đã ký/đang ký/đã từ chối hoặc BB thanh lý,Ẩn nút Từ chối theo trạng thái,1. Quan sát nút Từ chối,1. Nút Từ chối ẩn khi đã ký/đang ký/đã từ chối; BB thanh lý không có nút Từ chối.,,Medium,,
+21,Ký thành công,Happy,Màn ký HĐ (MC),Ký điện tử Hợp đồng thành công,"1. Scroll cuối + tick + Ký điện tử
+2. Nhập OTP ký đúng",1. Ký thành công (popup); HĐ → trạng thái xử lý Chờ thẩm định; ghi lịch sử.,,High,,
+22,Ký thành công,Happy,Link GUQ đối tượng NNUQ,GUQ — NNUQ ký điện tử thành công,1. NNUQ truy cập link → ký điện tử thành công,1. Trạng thái ký NNUQ → Chờ MC ký; hệ thống gen link + gửi mail ký GUQ cho người đại diện MC.,,High,,
+23,Ký thành công,Happy,"Link GUQ đối tượng MC, NNUQ đã ký",GUQ — MC ký thành công (chốt hiệu lực),1. MC truy cập link → ký điện tử thành công,"1. Trạng thái → MC đã ký, Đang hiệu lực.
+2. Ngày hiệu lực theo mốc 12h/00h.
+3. Gửi mail MC.
+4. TK/PL cũ → hết hiệu lực.
+5. Sinh bản ghi đổi TK NNUQ ở màn VH xử lý (Đã tiếp nhận).",,High,,
+24,Ký thành công,Happy,Link PL đổi phí,Phụ lục đổi phí — MC ký,1. MC ký điện tử thành công,1. PL → Chờ GtelPay ký; gửi mail lãnh đạo; hiển thị ở DS phụ lục chờ GtelPay ký.,,High,,
+25,Ký thành công,Happy,Link PL bổ sung TID,Phụ lục cấp bổ sung TID — MC ký,1. MC ký điện tử thành công,1. PL → Chờ thẩm định; hiển thị ở màn Thẩm định phụ lục (QTRR).,,High,,
+26,Ký thành công,Happy,Link PL đổi TK,Phụ lục đổi TK thanh toán — MC ký,1. MC ký điện tử thành công,1. PL → Chờ GtelPay ký; gửi mail lãnh đạo; hiển thị ở DS chờ GtelPay ký.,,High,,HỎI BA: spec ghi lẫn 'Ký BB thanh lý thành công' - xác nhận trạng thái cuối
+27,Ký thành công,Happy,Link BB thanh lý (HĐ ký điện tử),Biên bản thanh lý — MC ký,1. MC ký điện tử thành công (màn không có nút Từ chối),1. HĐ → TL_Chờ GtelPay ký; gửi mail lãnh đạo; BB hiển thị ở DS BB thanh lý chờ GtelPay ký.,,High,,
+28,Ký thành công,Unhappy,Lỗi khi ký,Ký lỗi → cho ký lại,1. Ký điện tử gặp lỗi,1. Báo lỗi + cho ký lại; ghi action ký lỗi vào lịch sử (HĐ → MC ký lỗi / NNUQ ký lỗi).,,High,,
