@@ -1,5 +1,7 @@
+import { expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { MerchantData, PNG } from '../data/merchantData';
+import { CONTRACT } from '../config/env';
 
 /**
  * Page Object: màn Tạo merchant (Hộ kinh doanh) + gửi thẩm định.
@@ -8,6 +10,12 @@ import { MerchantData, PNG } from '../data/merchantData';
 export class MerchantCreatePage extends BasePage {
   /** Tạo 1 merchant hoàn chỉnh và gửi thẩm định. Kết thúc khi đã quay về /merchant. */
   async create(d: MerchantData) {
+    await this.fillForm(d);
+    await this.submitAppraisal(d);
+  }
+
+  /** Điền toàn bộ form tạo merchant (chưa gửi thẩm định). */
+  async fillForm(d: MerchantData) {
     const page = this.page;
 
     await page.goto('/merchant/create');
@@ -22,7 +30,9 @@ export class MerchantCreatePage extends BasePage {
     await page.fill('#taxCode', d.taxCode);
     await page.locator('#phoneNumber').nth(0).fill(d.phone);
     await page.locator('#email').nth(0).fill(d.email);
-    await this.selFirst('agentId');
+    // Đại lý: theo config (staging cần đại lý có cấu hình phí); rỗng = đại lý đầu
+    if (CONTRACT.agent) await this.selSearch('agentId', CONTRACT.agent);
+    else await this.selFirst('agentId');
     await this.selFirst('services');
     await this.selFirst('headquartersProvince');
     await this.selFirst('headquartersWard');
@@ -47,22 +57,31 @@ export class MerchantCreatePage extends BasePage {
     await this.selFirst('currentWard');
     await page.fill('#currentAddress', d.addr);
     await page.locator('.ant-checkbox-wrapper input[type=checkbox]').first().check().catch(() => {});
+  }
 
-    // --- Gửi thẩm định: upload 4 hồ sơ trong modal ---
+  /** Mở popup gửi thẩm định, upload hồ sơ, gửi. */
+  async submitAppraisal(d: MerchantData) {
+    const page = this.page;
+    // --- Gửi thẩm định: upload hồ sơ trong modal ---
     await page.getByRole('button', { name: 'Tạo & gửi thẩm định' }).click();
     const modal = page.locator('.ant-modal');
+    // Bảng hồ sơ BẮT BUỘC (bảng đầu chứa "ĐKKD mặt trước"); upload theo NHÃN dòng cho ổn định
+    // (số dòng/thứ tự khác nhau theo cấu hình; tránh ô file ở bảng ẩn khác → hết timeout).
     const reqTable = modal.locator('table').filter({ hasText: 'ĐKKD mặt trước' }).first();
     await reqTable.waitFor();
-    // tbody dòng 0 là header; 4 dòng hồ sơ thật là nth(1..4) (vị trí cố định, không trôi khi upload)
-    const allRows = reqTable.locator('tbody tr');
-    for (let k = 1; k <= 4; k++) {
-      const row = allRows.nth(k);
-      await row.locator('input.ant-input').first().fill(`HS-${d.code}`);
-      await row.locator('input[type=file]').setInputFiles(PNG);
-      await page.waitForTimeout(200);
+    // Upload LẦN LƯỢT mọi dòng còn ô "Tải file": dòng nào upload xong thì ô file biến mất
+    // (đổi thành link file), nên cứ lấy dòng đầu còn ô file → upload → lặp tới khi hết.
+    const pendingRows = () => reqTable.locator('tbody tr').filter({ has: page.locator('input[type=file]') });
+    for (let guard = 0; guard < 10 && (await pendingRows().count()) > 0; guard++) {
+      const r = pendingRows().first();
+      await r.locator('input.ant-input').first().fill(`HS-${d.code}`).catch(() => {});
+      await r.locator('input[type=file]').setInputFiles(PNG);
+      await page.waitForTimeout(400);
     }
-    await page.waitForTimeout(400);
-    await modal.getByRole('button', { name: 'Gửi thẩm định' }).click();
+    // Chờ nút bật (file upload xong) thay vì chờ cứng → hết flaky
+    const submit = modal.getByRole('button', { name: 'Gửi thẩm định' });
+    await expect(submit).toBeEnabled({ timeout: 30000 });
+    await submit.click();
     await page.waitForURL('**/merchant', { timeout: 30000 });
   }
 }

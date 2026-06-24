@@ -61,12 +61,15 @@ export class BasePage {
    */
   protected async selSearch(id: string, term: string) {
     await this.page.keyboard.press('Escape').catch(() => {});
-    await this.page.waitForTimeout(120);
+    await this.page.waitForTimeout(150);
     await this.page.locator(`.ant-select:has(#${id}) .ant-select-selector`).first().click();
     await this.page.locator(`#${id}`).fill(term);
+    await this.page.waitForTimeout(500); // chờ list lọc theo từ khóa
     const dd = this.page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)').last();
-    await dd.locator('.ant-select-item-option').first().waitFor();
-    await dd.locator('.ant-select-item-option').first().click();
+    // Click option KHỚP từ khóa (không phải option đầu của list chưa lọc)
+    const opt = dd.locator('.ant-select-item-option', { hasText: term }).first();
+    await opt.waitFor({ state: 'visible' });
+    await opt.click();
   }
 
   /** Locator dòng bảng chứa `text` (vd số seri / tên MC). */

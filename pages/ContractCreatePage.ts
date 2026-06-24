@@ -56,7 +56,13 @@ export class ContractCreatePage extends BasePage {
 
     // --- Tạo ---
     await page.getByRole('button', { name: 'Tạo hợp đồng' }).click();
-    await page.getByRole('dialog').getByRole('button', { name: 'Xác nhận' }).click();
-    await page.waitForURL(/\/contracts\/?($|\?)/, { timeout: 30000 });
+    // Bấm Xác nhận trên dialog confirm ĐANG HIỂN THỊ (tránh modal ẩn khác trong DOM)
+    const confirmContent = page.locator('.ant-modal-content:visible').filter({ hasText: 'Xác nhận tạo hợp đồng' });
+    const confirmBtn = confirmContent.locator('button:has-text("Xác nhận")').last();
+    await confirmBtn.waitFor({ state: 'visible' });
+    await confirmBtn.click();
+    // Tạo xong → dialog confirm đóng (đáng tin hơn chờ URL vì đích khác nhau theo môi trường)
+    await confirmContent.waitFor({ state: 'hidden', timeout: 30000 });
+    await page.waitForTimeout(1000);
   }
 }

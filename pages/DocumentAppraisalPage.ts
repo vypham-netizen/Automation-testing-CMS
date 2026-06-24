@@ -32,7 +32,10 @@ export class DocumentAppraisalPage extends BasePage {
     }
 
     await page.getByRole('button', { name: 'Đánh giá' }).click();
-    await page.getByRole('dialog').getByRole('button', { name: 'Xác nhận' }).click();
-    await page.waitForURL('**/document-appraisal', { timeout: 30000 });
+    // Bấm Xác nhận trên dialog confirm ĐANG HIỂN THỊ (tránh modal ẩn khác)
+    const confirm = page.locator('.ant-modal-content:visible').filter({ hasText: 'Xác nhận đánh giá' });
+    await confirm.locator('button:has-text("Xác nhận")').last().click();
+    await confirm.waitFor({ state: 'hidden', timeout: 30000 });
+    await page.waitForTimeout(800);
   }
 }
