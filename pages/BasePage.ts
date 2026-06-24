@@ -54,4 +54,33 @@ export class BasePage {
     await inp.fill(value);
     await inp.press('Enter');
   }
+
+  /**
+   * Chọn option trong ant-select có ô tìm kiếm: mở → gõ `term` → chọn option đầu khớp.
+   * Dùng cho list dài/ảo hoá (vd ngân hàng) hoặc masterdata khác nhau theo môi trường.
+   */
+  protected async selSearch(id: string, term: string) {
+    await this.page.keyboard.press('Escape').catch(() => {});
+    await this.page.waitForTimeout(120);
+    await this.page.locator(`.ant-select:has(#${id}) .ant-select-selector`).first().click();
+    await this.page.locator(`#${id}`).fill(term);
+    const dd = this.page.locator('.ant-select-dropdown:not(.ant-select-dropdown-hidden)').last();
+    await dd.locator('.ant-select-item-option').first().waitFor();
+    await dd.locator('.ant-select-item-option').first().click();
+  }
+
+  /** Locator dòng bảng chứa `text` (vd số seri / tên MC). */
+  protected row(text: string): Locator {
+    return this.page.locator('tbody tr').filter({ hasText: text }).first();
+  }
+
+  /** Tick checkbox của dòng chứa `text`. */
+  protected async tickRow(text: string) {
+    await this.row(text).locator('input.ant-checkbox-input').first().check();
+  }
+
+  /** Nút "Xác nhận" trong modal đang mở. */
+  protected modalConfirm(): Locator {
+    return this.page.locator('.ant-modal-content button', { hasText: 'Xác nhận' }).first();
+  }
 }

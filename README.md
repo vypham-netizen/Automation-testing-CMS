@@ -5,29 +5,39 @@ Framework test tự động cho hệ thống **CMS POS**.
 ## Cấu trúc (Page Object Model)
 ```
 cms-automation/
-├── tests/                  # File test (.spec.ts) — chỉ "kể chuyện", gọi Page Object
+├── config/
+│   └── env.ts              # CONFIG SWITCH môi trường (local|staging) — TEST_ENV
+├── tests/
 │   ├── auth.setup.ts       # Đăng nhập 1 lần, lưu session
 │   ├── login.spec.ts       # Smoke: vào được màn chính
 │   ├── tid-mid.spec.ts     # Test màn Quản lý TID/MID
-│   └── seed.spec.ts        # Seed dữ liệu: tạo MC → thẩm định → ký HĐ
+│   ├── seed.spec.ts        # Seed: tạo MC → thẩm định → ký HĐ
+│   └── e2e-tid-flow.spec.ts# E2E v1.5: MC → HĐ → TID (gửi bank → tạm hoãn → hủy)
 ├── pages/                  # Page Object Model (mỗi màn 1 class)
-│   ├── BasePage.ts         # Lớp cha: helper dùng chung (dropdown, datepicker)
-│   ├── LoginPage.ts
-│   ├── TidMidPage.ts
-│   ├── MerchantCreatePage.ts
-│   ├── DocumentAppraisalPage.ts
-│   └── ContractCreatePage.ts
-├── data/                   # Dữ liệu test tách riêng khỏi logic
-│   └── merchantData.ts     # Hàm sinh data merchant (buildMerchants)
-├── fixtures/               # File tĩnh dùng để upload (dummy.png)
-├── playwright.config.ts    # Cấu hình test thường: baseURL, report, trace, auth
-├── seed.config.ts          # Cấu hình riêng cho seed (inject token, 1 worker)
-├── .env.example            # Mẫu biến môi trường (copy thành .env)
-└── package.json
+│   ├── BasePage.ts         # helper chung (dropdown, search-select, thao tác dòng)
+│   ├── LoginPage.ts · TidMidPage.ts · MerchantCreatePage.ts
+│   ├── DocumentAppraisalPage.ts · ContractCreatePage.ts
+│   └── doisoat/            # SCAFFOLD v2.0 (đối soát — màn chưa build, khung sẵn)
+│       ├── CaDoiSoatPage.ts · GiaoDichPage.ts · DeXuatThanhToanPage.ts
+│       └── HoldPage.ts · TruyThuPage.ts · TTBSPage.ts
+├── data/merchantData.ts    # Hàm sinh data merchant (buildMerchants)
+├── fixtures/dummy.png      # File tĩnh để upload
+├── playwright.config.ts    # Test thường (auth.setup + login/tid-mid)
+├── seed.config.ts          # Seed (inject token)
+├── e2e.config.ts           # E2E luồng đầy đủ (inject token)
+└── .env.example
 ```
 
 > **Nguyên tắc POM:** locator + thao tác nằm trong `pages/*`; file test chỉ ra lệnh mức cao.
-> UI đổi → chỉ sửa trong Page tương ứng, không phải sửa từng test.
+
+## Chuyển môi trường (local ↔ staging)
+Sửa `TEST_ENV` trong `.env` (`local` hoặc `staging`) hoặc truyền khi chạy:
+```bash
+TEST_ENV=staging npm run e2e        # chạy E2E trên staging
+TEST_ENV=local   npm run seed       # seed trên local
+```
+`config/env.ts` chọn `BASE_URL` + token + thông số hợp đồng (bank/ngành) theo từng môi trường.
+Bước gửi mail trong E2E chỉ chạy khi `SEND_MAIL=1` (vì gửi mail tới đại lý — chỉ bật khi đại lý dùng hòm test).
 
 ## Cài đặt lần đầu (chạy 1 lần)
 ```bash
@@ -40,10 +50,11 @@ cp .env.example .env        # tạo file .env
 
 ## Chạy test
 ```bash
-npm test            # chạy tất cả test (ẩn trình duyệt)
-npm run test:headed # chạy và XEM trình duyệt thao tác
-npm run test:ui     # chế độ UI (xem từng bước, debug dễ)
-npm run report      # mở báo cáo HTML sau khi chạy
+npm test            # test thường (login + TID/MID)
+npm run seed        # seed merchant + hợp đồng (SEED_COUNT=5 mặc định)
+npm run e2e         # E2E luồng đầy đủ MC→HĐ→TID
+npm run e2e:headed  # ... và XEM trình duyệt chạy
+npm run report      # mở báo cáo HTML
 ```
 
 ## Mẹo học nhanh

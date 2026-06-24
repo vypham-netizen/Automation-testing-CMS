@@ -1,5 +1,6 @@
 import { BasePage } from './BasePage';
 import { MerchantData } from '../data/merchantData';
+import { CONTRACT } from '../config/env';
 
 /**
  * Page Object: màn Tạo hợp đồng (phương thức Ký tay).
@@ -17,10 +18,13 @@ export class ContractCreatePage extends BasePage {
     await page.waitForURL('**/contracts/create/**');
     await page.locator('#bankId').waitFor();
 
-    // --- Thông tin hợp đồng ---
-    await this.selTitle('bankId', 'Ngân hàng KEB Hana – Chi nhánh Hà Nội - KEBHANAHN');
-    await this.selTitle('professionId', 'TH06 - CMS- 171');
-    await this.selTitle('signingMethod', 'Ký tay');
+    // --- Thông tin hợp đồng (bank/ngành theo môi trường — config/env.ts) ---
+    // Lưu ý: bank+ngành phải là tổ hợp đại lý của merchant CÓ cấu hình phí,
+    // nếu không bảng "Phí dịch vụ" trống → nút Tạo hợp đồng disable.
+    await this.selSearch('bankId', CONTRACT.bank);
+    await this.selSearch('professionId', CONTRACT.profession);
+    await this.selText('signingMethod', CONTRACT.signingMethod);
+    // Bảng phí tự điền theo mốc phí đại lý (đã hợp lệ); không cần nhập tay.
 
     // --- 1 máy POS ---
     await page.fill('#numberOfTerminal', '1');

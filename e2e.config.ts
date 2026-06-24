@@ -1,11 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 import { BASE_URL } from './config/env';
 
-// Config seed (merchant + hợp đồng) — inject token trong test, không dùng auth.setup.
-// Đổi môi trường bằng TEST_ENV=local|staging (xem config/env.ts).
+// Config cho E2E luồng đầy đủ (inject token, không dùng auth.setup).
+// Chạy: TEST_ENV=staging npm run e2e   (hoặc local)
 export default defineConfig({
   testDir: './tests',
-  testMatch: /seed\.spec\.ts/,
+  testMatch: /e2e-.*\.spec\.ts/,
   timeout: 600_000,
   retries: 0,
   workers: 1,
@@ -19,5 +19,5 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
   },
-  projects: [{ name: 'seed', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: 'e2e', use: { ...devices['Desktop Chrome'] } }],
 });
