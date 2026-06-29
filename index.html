@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ma trận phân quyền CMS POS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px}
+header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:#fff;padding:18px 24px}
+header h1{font-size:19px;font-weight:700}
+header p{font-size:12px;opacity:.85;margin-top:3px}
+.bar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e2e8f0;padding:12px 24px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.roles{display:flex;gap:6px;flex-wrap:wrap}
+.rbtn{border:1px solid #cbd5e1;background:#fff;color:#334155;padding:6px 12px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600}
+.rbtn:hover{background:#f1f5f9}
+.rbtn.active{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
+#search{flex:1;min-width:180px;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-size:13px}
+.tbtn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 11px;cursor:pointer;font-size:12px;color:#475569}
+.tbtn:hover{background:#f1f5f9}
+.wrap{padding:16px 24px 60px;max-width:1200px;margin:0 auto}
+.summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;min-width:120px}
+.card .n{font-size:22px;font-weight:700;color:#1e3a8a}
+.card .l{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px}
+.mod{background:#fff;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.mhead{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;background:#f8fafc;border-left:4px solid #1e3a8a}
+.mhead:hover{background:#f1f5f9}
+.mhead .arrow{transition:transform .15s;color:#64748b;font-size:12px}
+.mod.open .arrow{transform:rotate(90deg)}
+.mhead .mname{font-weight:700;font-size:14px}
+.tag{font-size:10px;background:#dbeafe;color:#1e40af;padding:2px 7px;border-radius:6px;font-weight:600}
+.cnt{margin-left:auto;font-size:11px;color:#94a3b8}
+.mbody{display:none}
+.mod.open .mbody{display:block}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 12px;border-top:1px solid #f1f5f9;vertical-align:top}
+th{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.4px;background:#fff}
+td.feat{font-weight:600;width:38%}
+.role-col{width:auto}
+.chip{display:inline-block;color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:5px;margin:2px 3px 2px 0;white-space:nowrap}
+.none{color:#cbd5e1;font-size:12px}
+.rolehdr{font-weight:700;color:#1e3a8a}
+.empty{padding:30px;text-align:center;color:#94a3b8}
+.legend{margin-top:18px;font-size:12px;color:#475569;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+.legend .chip{margin-right:4px}
+.warn{color:#b45309;font-weight:600}
+</style></head>
+<body>
+<header>
+ <h1>Ma trận phân quyền CMS POS — GtelPay</h1>
+ <p>Nguồn: Google Sheet phân quyền (Release 1.0 / 1.2 / 1.5) • Chọn vai trò để xem riêng việc của vai trò đó</p>
+</header>
+<div class="bar">
+ <div class="roles" id="roles"></div>
+ <input id="search" placeholder="🔍 Tìm chức năng… (vd: TID, hợp đồng, thẩm định)">
+ <button class="tbtn" id="expandAll">Mở tất cả</button>
+ <button class="tbtn" id="collapseAll">Gập tất cả</button>
+</div>
+<div class="wrap">
+ <div class="summary" id="summary"></div>
+ <div id="list"></div>
+ <div class="legend" id="legend"></div>
+</div>
+<script>
+const DATA = {"roles": ["Admin", "Vận hành", "Kinh doanh", "QTRR", "Hành chính"], "word": {"V": "Xem", "C": "Tạo", "E": "Sửa", "D": "Xóa", "A": "Thẩm định", "S": "Gửi", "X": "Xuất"}, "color": {"V": "#16a34a", "C": "#2563eb", "E": "#ea580c", "D": "#dc2626", "A": "#7c3aed", "S": "#0891b2", "X": "#64748b"}, "rows": [{"rel": "1.0", "mod": "Đăng nhập - Đăng xuất tài khoản", "feat": "Đăng nhập tài khoản", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Đăng nhập - Đăng xuất tài khoản", "feat": "Đổi mật khẩu lần đầu / sau reset", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Đăng nhập - Đăng xuất tài khoản", "feat": "Khóa tài khoản", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Đăng nhập - Đăng xuất tài khoản", "feat": "Đăng xuất", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Đăng nhập - Đăng xuất tài khoản", "feat": "Phiên đăng nhập", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Xem danh sách tài khoản", "perms": {"Admin": ["V"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Tạo/Sửa tài khoản", "perms": {"Admin": ["V", "C", "E", "X"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Khoá/Mở tài khoản", "perms": {"Admin": ["V"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Reset mật khẩu", "perms": {"Admin": ["V"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Tạo/Sửa nhóm vai trò", "perms": {"Admin": ["V", "C", "E"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý Tài khoản", "feat": "Lịch sử cập nhật tài khoản", "perms": {"Admin": ["V", "E"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý quyền hệ thống", "feat": "Xem danh sách quyền", "perms": {"Admin": ["V"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý quyền hệ thống", "feat": "Tạo/Sửa quyền hệ thống", "perms": {"Admin": ["V", "C", "E"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý hành động hệ thống", "feat": "Xem danh sách hành động", "perms": {"Admin": ["V"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý hành động hệ thống", "feat": "Tạo/Sửa hành động", "perms": {"Admin": ["V", "C", "E"], "Vận hành": [], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Đại lý", "feat": "Xem danh sách Đại lý", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Đại lý", "feat": "Thêm/Sửa Đại lý", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Đại lý", "feat": "Lịch sử cập nhật đại lý", "perms": {"Admin": ["V", "E"], "Vận hành": ["V", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Ngân hàng hợp tác", "feat": "Xem danh sách Ngân hàng hợp tác", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Ngân hàng hợp tác", "feat": "Thêm/Sửa Ngân hàng hợp tác", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Ngân hàng hợp tác", "feat": "Cập nhật nguồn cấu hình cho Đại lý và Hợp đồng", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Nhóm Merchant", "feat": "Xem danh sách nhóm Merchant", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Nhóm Merchant", "feat": "Thêm/Sửa Nhóm Merchant", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Ngành nghề kinh doanh", "feat": "Xem danh sách ngành nghề", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình Ngành nghề kinh doanh", "feat": "Thêm/Sửa Ngành nghề", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý danh mục hồ sơ", "feat": "Xem danh sách danh mục hồ sơ", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý danh mục hồ sơ", "feat": "Thêm/Sửa danh mục hồ sơ", "perms": {"Admin": ["V", "C", "E", "X"], "Vận hành": ["V", "C", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình MCC", "feat": "Xem danh sách MCC", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Cấu hình MCC", "feat": "Thêm/Sửa MCC", "perms": {"Admin": ["V", "C", "E", "S"], "Vận hành": ["V", "C", "E", "S"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý thông tin Merchant", "feat": "Xem danh sách Merchant", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "E", "D"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý thông tin Merchant", "feat": "Thông tin chi tiết Merchant", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "A"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý thông tin Merchant", "feat": "Thêm mới Merchant", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "A", "X"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý thông tin Merchant", "feat": "Lịch sử thẩm định", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "A"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Thẩm định hồ sơ Merchant", "feat": "Xem danh sách hồ sơ yêu cầu thẩm định", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Thẩm định hồ sơ Merchant", "feat": "Màn hình Thẩm định hồ sơ", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Xem danh sách hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "A", "S"], "QTRR": ["V", "A"], "Hành chính": ["V", "A"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Thông tin chi tiết hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Tạo hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Xem danh sách hợp đồng (bổ sung lọc)", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Thanh lý hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Xuất file cấp TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "X"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Cập nhật trạng thái vận hành", "perms": {"Admin": ["V"], "Vận hành": ["V", "E"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Nhập kết quả thẩm định kèm lý do", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V", "A"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Xem danh sách hợp đồng (bộ trạng thái mới)", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "E"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Thông tin chi tiết hợp đồng (v2)", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "S", "X"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Tạo hợp đồng (v2)", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "S"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Lưu nháp hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "E"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Sửa hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "E", "S"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Hủy hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "D"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Nhập kết quả lãnh đạo ký", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "A", "S", "X"], "Kinh doanh": ["V"], "QTRR": ["V"], "Hành chính": ["V", "A"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Nhập kết quả thẩm định (v2)", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": ["V", "C", "A", "S", "X"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Gửi lại email link ký hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "S"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Tạo lại file hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "S"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý Hợp đồng Merchant", "feat": "Thêm tài khoản mới cho MC", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "C", "E"], "QTRR": ["V"], "Hành chính": ["V"]}}, {"rel": "1.0", "mod": "Quản lý hợp đồng GtelPay ký", "feat": "Xem danh sách hợp đồng chờ ký", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý hợp đồng GtelPay ký", "feat": "Popup ký số hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Quản lý hợp đồng GtelPay ký", "feat": "Ký số hàng loạt", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Gửi mail báo cáo đối soát giao dịch", "feat": "Màn hình Đối soát giao dịch", "perms": {"Admin": ["V"], "Vận hành": ["V", "C"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Gửi mail báo cáo đối soát giao dịch", "feat": "Popup gửi mail báo cáo giao dịch", "perms": {"Admin": ["V"], "Vận hành": ["V", "C", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Gửi mail báo cáo đối soát giao dịch", "feat": "Danh sách email đã gửi", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Gửi mail báo cáo đối soát giao dịch", "feat": "Popup xem nội dung mail", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.0", "mod": "Gửi mail báo cáo đối soát giao dịch", "feat": "Popup nội dung ca đối soát lỗi", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cập nhật mẫu hợp đồng", "feat": "Thêm trường Số hồ sơ, ngày cấp hồ sơ", "perms": {"Admin": ["V", "C", "A"], "Vận hành": ["V", "C", "A"], "Kinh doanh": [], "QTRR": ["V", "A"], "Hành chính": []}}, {"rel": "1.2", "mod": "Cập nhật mẫu hợp đồng", "feat": "Cập nhật tạo/sửa hợp đồng", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cập nhật mẫu hợp đồng", "feat": "Cập nhật logic gen file hợp đồng", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cập nhật mẫu hợp đồng", "feat": "Cập nhật chi tiết hợp đồng", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Xem danh sách Đại lý (v2.1)", "perms": {"Admin": ["V", "C", "E", "D"], "Vận hành": ["V", "C", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Thêm/Sửa Đại lý (v2.1)", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Lịch sử cập nhật đại lý (v2.1)", "perms": {"Admin": ["V", "E"], "Vận hành": ["V", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Cấu hình phí Đại lý (v2.1)", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Xem danh sách Đại lý (v2.0)", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Thêm/Sửa Đại lý (v2.0)", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình Đại lý", "feat": "Lịch sử cập nhật đại lý (v2.0)", "perms": {"Admin": ["V", "E"], "Vận hành": ["V", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Quản lý tổ chức phát hành thẻ", "feat": "Xem danh sách Tổ chức phát hành thẻ", "perms": {"Admin": ["V", "E", "D"], "Vận hành": ["V", "E", "D"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Quản lý tổ chức phát hành thẻ", "feat": "Thêm/Sửa Tổ chức phát hành thẻ", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình phí Ngân hàng hợp tác", "feat": "Xem danh sách Ngân hàng hợp tác", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình phí Ngân hàng hợp tác", "feat": "Cập nhật tạo/sửa Đại lý theo phí NH", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình phí Ngân hàng hợp tác", "feat": "Cập nhật tạo/sửa hợp đồng theo phí NH", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.2", "mod": "Cấu hình phí Ngân hàng hợp tác", "feat": "Cấu hình phí Ngân hàng với GtelPay", "perms": {"Admin": ["V", "C", "E"], "Vận hành": ["V", "C", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Danh sách TID/MID", "perms": {"Admin": ["V"], "Vận hành": ["V", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Chi tiết thông tin TID", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Gửi bank", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Import file kết quả TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Bàn giao BD", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Gửi bank đóng TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Đóng TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Tạm hoãn", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Huỷ yêu cầu cấp TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "D", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Chỉnh sửa TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý TID/MID", "feat": "Tra cứu dữ liệu TID", "perms": {"Admin": ["V"], "Vận hành": ["V", "X"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý văn bản", "feat": "Danh sách văn bản", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý văn bản", "feat": "Tạo văn bản", "perms": {"Admin": ["V"], "Vận hành": ["V", "C", "S"], "Kinh doanh": ["V", "C", "S"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý văn bản", "feat": "Xem danh sách tài khoản gắn với TID", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý văn bản", "feat": "Sửa văn bản", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "S"], "Kinh doanh": ["V", "E", "S"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Quản lý văn bản", "feat": "Gửi lại email ký / Hủy / Gen lại file", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "D", "S"], "Kinh doanh": ["V", "E", "D", "S"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Ký số văn bản", "feat": "Danh sách biên bản thanh lý hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Ký số văn bản", "feat": "Danh sách phụ lục hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Ký số văn bản", "feat": "Danh sách giấy ủy quyền", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": ["V", "E", "S", "X"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Danh sách yêu cầu Vận hành xử lý", "feat": "Danh sách yêu cầu Vận hành xử lý", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Danh sách yêu cầu Vận hành xử lý", "feat": "Xử lý yêu cầu", "perms": {"Admin": ["V"], "Vận hành": ["V", "E"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Thẩm định phụ lục", "feat": "Tab danh sách phụ lục chờ thẩm định", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": ["V", "A"], "Hành chính": []}}, {"rel": "1.5", "mod": "Thẩm định phụ lục", "feat": "Thẩm định văn bản phụ lục hợp đồng", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": ["V", "E", "A", "S"], "Hành chính": []}}, {"rel": "1.5", "mod": "Thanh lý hợp đồng", "feat": "Thanh lý - ký số điện tử", "perms": {"Admin": ["V"], "Vận hành": ["V", "E", "S"], "Kinh doanh": ["V"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Thanh lý hợp đồng", "feat": "Thanh lý - ký tay", "perms": {"Admin": ["V"], "Vận hành": ["V", "C", "S", "X"], "Kinh doanh": ["V"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Thanh lý hợp đồng", "feat": "Gửi lại email ký / View biên bản thanh lý", "perms": {"Admin": ["V"], "Vận hành": ["V", "S", "X"], "Kinh doanh": ["V"], "QTRR": [], "Hành chính": []}}, {"rel": "1.5", "mod": "Hợp đồng - Quản lý danh sách TID/MID", "feat": "Tab Quản lý TID/MID", "perms": {"Admin": ["V"], "Vận hành": ["V"], "Kinh doanh": [], "QTRR": [], "Hành chính": []}}]};
+const {roles, word, color, rows} = DATA;
+let curRole = "Tất cả";
+let query = "";
+
+function chip(code){
+  const label = word[code] || code;
+  return `<span class="chip" style="background:${color[code]||'#64748b'}">${label}</span>`;
+}
+function rolePerms(r, role){ return r.perms[role] || []; }
+
+function visibleRows(){
+  return rows.filter(r=>{
+    if(query && !(r.feat.toLowerCase().includes(query) || r.mod.toLowerCase().includes(query))) return false;
+    if(curRole!=="Tất cả" && rolePerms(r,curRole).length===0) return false;
+    return true;
+  });
+}
+
+function renderRolesBar(){
+  const el = document.getElementById('roles');
+  const all = ["Tất cả", ...roles];
+  el.innerHTML = all.map(r=>`<button class="rbtn ${r===curRole?'active':''}" data-r="${r}">${r}</button>`).join('');
+  el.querySelectorAll('.rbtn').forEach(b=>b.onclick=()=>{curRole=b.dataset.r;render();});
+}
+
+function renderSummary(){
+  const el=document.getElementById('summary');
+  const vis=visibleRows();
+  let cards=`<div class="card"><div class="n">${vis.length}</div><div class="l">Chức năng hiển thị</div></div>`;
+  roles.forEach(role=>{
+    const c=rows.filter(r=>rolePerms(r,role).length>0).length;
+    const on = (curRole===role);
+    cards+=`<div class="card" style="${on?'border-color:#1e3a8a;border-width:2px':''}"><div class="n">${c}</div><div class="l">${role}</div></div>`;
+  });
+  el.innerHTML=cards;
+}
+
+function renderList(){
+  const el=document.getElementById('list');
+  const vis=visibleRows();
+  if(vis.length===0){el.innerHTML='<div class="empty">Không có chức năng nào khớp.</div>';return;}
+  // group by module (giữ thứ tự xuất hiện)
+  const groups=[]; const idx={};
+  vis.forEach(r=>{
+    const key=r.mod+' | '+r.rel;
+    if(!(key in idx)){idx[key]=groups.length;groups.push({mod:r.mod,rel:r.rel,items:[]});}
+    groups[idx[key]].items.push(r);
+  });
+  const showRoles = curRole==="Tất cả" ? roles : [curRole];
+  el.innerHTML=groups.map((g,gi)=>{
+    const head=`<div class="mhead"><span class="arrow">▶</span><span class="mname">${g.mod}</span><span class="tag">v${g.rel}</span><span class="cnt">${g.items.length} chức năng</span></div>`;
+    let th=`<th>Chức năng</th>`+showRoles.map(r=>`<th class="rolehdr">${r}</th>`).join('');
+    const body=g.items.map(it=>{
+      const cells=showRoles.map(role=>{
+        const ps=rolePerms(it,role);
+        return `<td class="role-col">${ps.length?ps.map(chip).join(''):'<span class="none">—</span>'}</td>`;
+      }).join('');
+      return `<tr><td class="feat">${it.feat}</td>${cells}</tr>`;
+    }).join('');
+    return `<div class="mod open"><div class="mhead-w">${head}</div><div class="mbody"><table><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+  }).join('');
+  el.querySelectorAll('.mod').forEach(m=>{
+    m.querySelector('.mhead').onclick=()=>m.classList.toggle('open');
+  });
+}
+
+function renderLegend(){
+  const order=["V","C","E","D","A","S","X"];
+  const std=order.slice(0,4).map(chip).join(' ');
+  const spe=order.slice(4).map(chip).join(' ');
+  document.getElementById('legend').innerHTML=
+    `<b>Chú thích quyền:</b> &nbsp; ${std} <span style="color:#94a3b8">(chuẩn: Xem/Tạo/Sửa/Xóa)</span> &nbsp;|&nbsp; ${spe} <span class="warn">(suy đoán: Thẩm định?/Gửi?/Xuất? — cần xác nhận legend gốc)</span>`;
+}
+
+function render(){renderRolesBar();renderSummary();renderList();renderLegend();}
+
+document.getElementById('search').oninput=e=>{query=e.target.value.trim().toLowerCase();renderSummary();renderList();};
+document.getElementById('expandAll').onclick=()=>document.querySelectorAll('.mod').forEach(m=>m.classList.add('open'));
+document.getElementById('collapseAll').onclick=()=>document.querySelectorAll('.mod').forEach(m=>m.classList.remove('open'));
+render();
+</script>
+</body></html>
